@@ -76,7 +76,6 @@ router.post("/purchase", async (req, res) => {
       }
     }
 
-    const groupedProducts = {};
     const insufficientStockProducts = [];
 
     // Verificar stock antes de agregar al carrito
@@ -97,12 +96,6 @@ router.post("/purchase", async (req, res) => {
           quantity,
           availableStock: productInDB.stock,
         });
-      } else {
-        if (!groupedProducts[id]) {
-          groupedProducts[id] = parseInt(quantity, 10);
-        } else {
-          groupedProducts[id] += parseInt(quantity, 10);
-        }
       }
     }
 
@@ -114,6 +107,17 @@ router.post("/purchase", async (req, res) => {
     }
 
     // Continuar con la compra
+    const groupedProducts = {};
+    for (const product of carritoToAdd.products) {
+      const { id, quantity } = product;
+
+      if (!groupedProducts[id]) {
+        groupedProducts[id] = parseInt(quantity, 10);
+      } else {
+        groupedProducts[id] += parseInt(quantity, 10);
+      }
+    }
+
     const carrito = new carritosModelo({
       productos: Object.keys(groupedProducts).map((id) => ({
         producto: id,
