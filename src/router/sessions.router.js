@@ -1,10 +1,6 @@
 const express = require("express");
-//const mongoose = require("mongoose");
 const router = express.Router();
-// const modeloUsuarios = require("../dao/DB/models/usuariosGithub.modelo.js");
-// const modeloUsers = require("../dao/DB/models/usuariosGithub.modelo.js");
-// const crypto = require("crypto");
-// const usersController = require("../controllers/users.controller.js");
+
 
 const config = require("../config/config.js");
 

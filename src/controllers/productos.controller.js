@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const productosServices = require("../services/productos.service.js");
+const productosMongoDao = require("../dao/productosMongoDao.js");
 
 const listarProductos = async (req, res) => {
   try {
@@ -32,7 +32,7 @@ const listarProductos = async (req, res) => {
       sortQuery.price = -1;
     }
 
-    const productos = await productosServices.listarProductos(
+    const productos = await productosMongoDao.listarProductos(
       query,
       limit,
       pagina,
@@ -42,7 +42,7 @@ const listarProductos = async (req, res) => {
     let { totalPages, hasPrevPage, hasNextPage, prevPage, nextPage } =
       productos;
 
-    return productos; 
+    return productos;
   } catch (error) {
     res.status(500).json({ error: "Error interno del servidor" });
   }
@@ -53,7 +53,7 @@ const obtenerProducto = async (req, res, next) => {
     let id = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(400).json({ error: "id inválido" });
-    let productoDB = await productosServices.obtenerProducto(id);
+    let productoDB = await productosMongoDao.obtenerProducto(id);
     if (!productoDB)
       return res
         .status(404)
@@ -83,14 +83,14 @@ const crearProducto = async (req, res) => {
       return res.status(400).json({ error: "Faltan datos" });
     }
 
-    const existe = await productosServices.existeProducto(producto.code);
+    const existe = await productosMongoDao.existeProducto(producto.code);
     if (existe) {
       return res.status(400).json({
         error: `El código ${producto.code} ya está siendo usado por otro producto.`,
       });
     }
 
-    const productoInsertado = await productosServices.crearProducto(producto);
+    const productoInsertado = await productosMongoDao.crearProducto(producto);
     res.status(201).json({ productoInsertado });
   } catch (error) {
     res.status(500).json({ error: "Error inesperado", detalle: error.message });
@@ -105,7 +105,7 @@ const borrarProducto = async (req, res) => {
       return res.status(400).json({ error: "ID inválido" });
     }
 
-    const producto = await productosServices.obtenerProducto(id);
+    const producto = await productosMongoDao.obtenerProducto(id);
 
     if (!producto) {
       return res
@@ -113,7 +113,7 @@ const borrarProducto = async (req, res) => {
         .json({ error: `Producto con id ${id} inexistente` });
     }
 
-    const resultado = await productosServices.borrarProducto(id);
+    const resultado = await productosMongoDao.borrarProducto(id);
 
     res
       .status(200)
