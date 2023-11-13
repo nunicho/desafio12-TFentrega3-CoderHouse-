@@ -77,15 +77,43 @@ router.post("/purchase", async (req, res) => {
     }
 
     const groupedProducts = {};
-    carritoToAdd.products.forEach((product) => {
-      const { id, quantity } = product;
-      if (!groupedProducts[id]) {
-        groupedProducts[id] = parseInt(quantity, 10);
-      } else {
-        groupedProducts[id] += parseInt(quantity, 10);
-      }
-    });
+    const insufficientStockProducts = [];
 
+    // Verificar stock antes de agregar al carrito
+    for (const product of carritoToAdd.products) {
+      const { id, quantity } = product;
+
+      const productInDB = await Producto.findById(id);
+
+      if (!productInDB) {
+        return res
+          .status(404)
+          .json({ error: `Producto con id ${id} no encontrado` });
+      }
+
+      if (productInDB.stock < quantity) {
+        insufficientStockProducts.push({
+          id,
+          quantity,
+          availableStock: productInDB.stock,
+        });
+      } else {
+        if (!groupedProducts[id]) {
+          groupedProducts[id] = parseInt(quantity, 10);
+        } else {
+          groupedProducts[id] += parseInt(quantity, 10);
+        }
+      }
+    }
+
+    if (insufficientStockProducts.length > 0) {
+      return res.status(400).json({
+        error: "No hay suficiente stock para algunos productos en el carrito.",
+        insufficientStockProducts,
+      });
+    }
+
+    // Continuar con la compra
     const carrito = new carritosModelo({
       productos: Object.keys(groupedProducts).map((id) => ({
         producto: id,
@@ -94,14 +122,21 @@ router.post("/purchase", async (req, res) => {
     });
 
     let carritoInsertado = await carrito.save();
+
+    // Restar el stock de los productos en el carrito
+    for (const product of carritoToAdd.products) {
+      const productInDB = await Producto.findById(product.id);
+      productInDB.stock -= product.quantity;
+      await productInDB.save();
+    }
+
     res.status(201).json({ carritoInsertado });
   } catch (error) {
     res.status(500).json({ error: "Error inesperado", detalle: error.message });
   }
 });
 
-// ... (Resto de tus rutas)
-module.exports = router;
+
 
 module.exports = router;
 

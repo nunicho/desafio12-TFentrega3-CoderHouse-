@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const carritoContainer = document.getElementById("carritoProductos");
   const carritoProductos = [];
 
-  function agregarAlCarrito(productId, productName, quantity) {
+  async function agregarAlCarrito(productId, productName, quantity) {
     const itemDiv = document.createElement("div");
 
     const productNameText = document.createTextNode(productName);
@@ -55,6 +55,8 @@ document.addEventListener("DOMContentLoaded", function () {
         alert(`Carrito ${data.carritoInsertado._id} creado exitosamente`);
       }
 
+      // Aquí puedes realizar acciones adicionales después de la compra
+
       limpiarCarrito();
     } catch (error) {
       console.error("Error al finalizar la compra:", error);
@@ -63,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const addToCartLinks = document.querySelectorAll("[data-product-id]");
   addToCartLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
+    link.addEventListener("click", async (event) => {
       event.preventDefault();
 
       const productId = link.getAttribute("data-product-id");
