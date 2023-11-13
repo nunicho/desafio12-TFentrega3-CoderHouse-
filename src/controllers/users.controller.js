@@ -1,10 +1,10 @@
 //const UserService = require("../services/users.service.js");
-
-const usersMongoDao = require("../dao/usersMongoDao.js");
+const mongoose = require("mongoose");
+const UsersRepository = require("../dao/repository/users.repository")
 
 const createUser = async (userData) => {
   try {
-    const user = await usersMongoDao.createUser(userData);
+    const user = await UsersRepository.createUser(userData);
     return user;
   } catch (error) {
     throw error;
@@ -13,7 +13,7 @@ const createUser = async (userData) => {
 
 const getUserByEmail = async (email) => {
   try {
-    const user = await usersMongoDao.getUserByEmail(email);
+    const user = await UsersRepository.getUserByEmail(email);
     return user;
   } catch (error) {
     throw error;
@@ -23,7 +23,7 @@ const getUserByEmail = async (email) => {
 
 const getUsers = async (req, res) => {
   try {
-    const users = await usersMongoDao.getUsers();
+    const users = await UsersRepository.getUsers();
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: "Error fetching users" });
@@ -34,7 +34,7 @@ const updateUser = async (req, res) => {
   try {
     const userId = req.params.userId;
     const userData = req.body;
-    const updatedUser = await usersMongoDao.updateUser(userId, userData);
+    const updatedUser = await UsersRepository.updateUser(userId, userData);
     if (!updatedUser) {
       res.status(404).json({ error: "User not found" });
     } else {
@@ -48,7 +48,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const userId = req.params.userId;
-    await usersMongoDao.deleteUser(userId);
+    await UsersRepository.deleteUser(userId);
     res.status(204).end();
   } catch (error) {
     res.status(500).json({ error: "Error deleting user" });
