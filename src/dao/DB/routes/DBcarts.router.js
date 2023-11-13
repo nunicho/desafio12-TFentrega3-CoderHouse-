@@ -1,6 +1,114 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
+const carritosModelo = require("../models/carritos.modelo.js");
+const Producto = require("../models/productos.modelo.js");
+const path = require("path");
+const prodModelo = require("../models/productos.modelo.js");
+
+router.get("/", async (req, res) => {
+  try {
+    const carritos = await carritosModelo.find();
+    res.status(200).json({ data: carritos });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+router.get("/:cid", async (req, res) => {
+  try {
+    const cid = req.params.cid;
+
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({
+        status: "error",
+        mensaje: 'Requiere un argumento "cid" de tipo ObjectId válido',
+      });
+    }
+
+    const carrito = await carritosModelo.findOne({ _id: cid }).populate({
+      path: "productos.producto",
+      model: prodModelo,
+    });
+
+    if (!carrito) {
+      return res.status(404).json({
+        status: "error",
+        mensaje: `El carrito con ID ${cid} no existe`,
+      });
+    }
+
+    const productosEnCarrito = carrito.productos.map((productoEnCarrito) => ({
+      producto: {
+        ...productoEnCarrito.producto._doc,
+      },
+      quantity: productoEnCarrito.cantidad,
+    }));
+
+    res.status(200).json({
+      data: { carrito: { _id: carrito._id, productos: productosEnCarrito } },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+router.post("/purchase", async (req, res) => {
+  try {
+    const carritoToAdd = req.body;
+
+    const hasMissingFields = carritoToAdd.products.some(
+      (product) => !product.id || !product.quantity
+    );
+
+    if (hasMissingFields || carritoToAdd.products.length === 0) {
+      return res.status(400).json({
+        error: 'Los productos deben tener campos "id" y "quantity" completos',
+      });
+    }
+
+    const productIds = carritoToAdd.products.map((product) => product.id);
+
+    for (const productId of productIds) {
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ error: "id inválido" });
+      }
+    }
+
+    const groupedProducts = {};
+    carritoToAdd.products.forEach((product) => {
+      const { id, quantity } = product;
+      if (!groupedProducts[id]) {
+        groupedProducts[id] = parseInt(quantity, 10);
+      } else {
+        groupedProducts[id] += parseInt(quantity, 10);
+      }
+    });
+
+    const carrito = new carritosModelo({
+      productos: Object.keys(groupedProducts).map((id) => ({
+        producto: id,
+        cantidad: groupedProducts[id],
+      })),
+    });
+
+    let carritoInsertado = await carrito.save();
+    res.status(201).json({ carritoInsertado });
+  } catch (error) {
+    res.status(500).json({ error: "Error inesperado", detalle: error.message });
+  }
+});
+
+// ... (Resto de tus rutas)
+module.exports = router;
+
+module.exports = router;
+
+/*
+const express = require("express");
+const mongoose = require("mongoose");
+const router = express.Router();
 const carritosModelo = require("../models/carritos.modelo.js"); 
 const Producto = require("../models/productos.modelo.js"); 
 const path = require("path");
@@ -62,13 +170,6 @@ router.get("/:cid", async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
-
-
-
-
-
-
-
 
    
 //------------------------------------------------------------------------ PETICION POST
@@ -364,3 +465,4 @@ router.delete("/:cid/products/:pid", async (req, res) => {
 
 
 module.exports = router;
+*/
