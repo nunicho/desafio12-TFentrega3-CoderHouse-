@@ -1,9 +1,9 @@
 const Router = require("express").Router;
 const router = Router();
 const arrayProducts = require("../archivos/productos.json");
-const productosModelo = require("../dao/DB/models/productos.modelo.js");
-const carritosModelo = require("../dao/DB/models/carritos.modelo.js");
-const prodModelo = require("../dao/DB/models/productos.modelo.js");
+//const productosModelo = require("../dao/DB/models/productos.modelo.js");
+//const carritosModelo = require("../dao/DB/models/carritos.modelo.js");
+//const prodModelo = require("../dao/DB/models/productos.modelo.js");
 
 const productosController = require("../controllers/productos.controller.js");
 const carritosController = require("../controllers/carritos.controller.js");
@@ -193,24 +193,6 @@ router.get(
     });
   }
 );
-
-router.get(
-  "/DBproducts/:id",
-  auth,
-  productosController.obtenerProducto,
-  (req, res) => {
-    const productoDB = res.locals.productoDB;
-    if (!productoDB) {
-      return res.status(404).send("Producto no encontrado");
-    }
-    res.header("Content-type", "text/html");
-    res.status(200).render("DBproductsDetails", {
-      productoDB,
-      estilo: "productDetails.css",
-    });
-  }
-);
-
 
 router.post("/DBProducts", auth, productosController.crearProducto);
 
