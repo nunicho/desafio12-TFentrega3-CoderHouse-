@@ -3,11 +3,9 @@
 
 {{#if usuario}}
   <div>Está logueado el usuario:</div>
-  <ul>
-    {{#each usuario}}
-      <li>{{@key}}: {{this}}</li>
-    {{/each}}
-  </ul>
+  {{usuario.email}}
+<div>Su rol es:</div>
+{{usuario.role}}
 {{else}}
   <div>No hay usuario autenticado</div>
 {{/if}}

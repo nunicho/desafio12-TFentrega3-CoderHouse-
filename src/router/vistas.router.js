@@ -9,6 +9,10 @@ const productosController = require("../controllers/productos.controller.js");
 const carritosController = require("../controllers/carritos.controller.js");
 
 
+//DTO para la vista CURRENT
+const dtoUsuarios = require("../dto/dtoUsuarios.js")
+
+
 const mongoose = require("mongoose");
 
 const auth = (req, res, next) => {
@@ -284,9 +288,11 @@ router.get("/current", (req, res) => {
     });
   }
 
+  const usuarioDTO = new dtoUsuarios(user.email, user.role);
+
   res.status(200).render("current", {
     estilo: "login.css",
-    usuario: user,
+    usuario: usuarioDTO,
   });
 });
 
