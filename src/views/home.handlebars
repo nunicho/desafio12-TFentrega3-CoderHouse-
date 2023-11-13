@@ -13,18 +13,21 @@
     <br>
     {{>menu}}
 
-    <div>
-        <a href="/FSproducts">Productos - En FileSystem</a>
-    </div>
-    <div>
-        <a href="/FSrealtimeproducts">Productos en tiempo real - En FileSystem</a>
-    </div>
-    <div>
-        <a href="/DBproducts">Productos - En DataBase</a>
-    </div>
-    <div>
-        <a href="/chat">Chat- Con Handlebars</a>
-    </div>
+    {{#ifEquals usuario.role 'administrador'}}
+        <div>
+            <a href="/DBproducts-Admin">Productos</a>
+        </div>
+    {{/ifEquals}}
+    {{#ifEquals usuario.role 'user'}}
+        <div>
+             <a href="/DBproducts">Productos</a>
+        </div>
+        <div>
+              <a href="/chat">Chat- Con Handlebars</a>
+        </div>
+    {{/ifEquals}}
+
+
   <label for="cartId">ID del Carrito:</label>
     <input type="text" id="cartId" placeholder="Ingrese el ID del carrito" oninput="toggleSubmitButton(); updateCartLink();">
     <button onclick="verDetalleCart();" disabled>Explorar Carrito</button>

@@ -1,14 +1,8 @@
 <span><a  href="/">Regresar</a></span> <span><button id="printButton">Imprimir Lista</button></span>
 <br/>
+<button id="agregarProducto">Agregar Producto</button>
 
-<div id="carritoContainer">
-  <h2>Carrito de Compras</h2>
-  <div id="carritoProductos">
-    <!-- Los productos seleccionados se agregarán aquí -->
-  </div>
-  <button id="limpiarCarrito">Limpiar Carrito</button> <!-- Botón para limpiar el carrito -->
-  <button id="finalizarCompra">Finalizar Compra</button>
-</div>
+
 
 <h1>Lista de productos en Base de Datos</h1>
 
@@ -49,8 +43,9 @@
                     alt="Product">
             </div>
         </article> 
-        <a href="DBProducts/{{ this._id }}">Más detalles</a>        
-        <a href="#" data-product-id="{{ this._id }}" data-product-name="{{ this.title }}">Agregar al Carrito</a>
+        <a href="DBProducts/{{ this._id }}">Más detalles</a>
+        <a href="DBProducts/" class="eliminar-producto" data-product-id="{{ this._id }}">Eliminar</a>
+        
         {{/each }}
     {{else}}
     <h1> ¡No se encontraron productos! </h1>

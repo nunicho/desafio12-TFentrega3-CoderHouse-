@@ -31,6 +31,21 @@ const auth2 = (req, res, next) => {
   }
 };
 
+
+const authRol = (roles) => {
+  return (req, res, next) => {
+    const user = req.session.usuario;
+
+    if (!user || !roles.includes(user.role)) {
+      return res
+        .status(403)
+        .send("No tienes permisos para acceder a esta ruta");
+    }
+
+    next();
+  };
+};
+
 router.use((req, res, next) => {
   res.locals.usuario = req.session.usuario; // Pasar el usuario a res.locals
   next();
@@ -101,7 +116,7 @@ router.get("/fsrealtimeproducts", auth, (req, res) => {
 
 //---------------------------------------------------------------- RUTAS PARA PRODUCTOS--------------- //
 
-router.get("/DBproducts", auth, async (req, res) => {
+router.get("/DBproducts", auth, authRol(["user"]), async (req, res) => {
   try {
     const productos = await productosController.listarProductos(req, res);
 
@@ -127,6 +142,39 @@ router.get("/DBproducts", auth, async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
+
+
+router.get(
+  "/DBproducts-Admin",
+  auth,
+  authRol(["administrador"]),
+  async (req, res) => {
+    try {
+      const productos = await productosController.listarProductos(req, res);
+
+      res.header("Content-type", "text/html");
+      res.status(200).render("DBproducts-Admin", {
+        productos: productos.docs,
+        hasProducts: productos.docs.length > 0,
+        // activeProduct: true,
+        status: productos.docs.status,
+        pageTitle: "Productos en DATABASE",
+        estilo: "productsStyles.css",
+        totalPages: productos.totalPages,
+        hasPrevPage: productos.hasPrevPage,
+        hasNextPage: productos.hasNextPage,
+        prevPage: productos.prevPage,
+        nextPage: productos.nextPage,
+        filtro: req.query.filtro || "",
+        codeFilter: req.query.codeFilter || "",
+        sort: req.query.sort || "",
+        limit: req.query.limit || 10,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  }
+);
 
 
 router.get(
@@ -204,7 +252,7 @@ router.get(
 
 //---------------------------------------------------------------- RUTAS PARA EL CHAT --------------- //
 
-router.get("/chat", auth, (req, res) => {
+router.get("/chat", auth, authRol(["user"]), (req, res) => {
   res.setHeader("Content-type", "text/html");
   res.status(200).render("chat", {
     estilo: "chat.css",
@@ -277,7 +325,7 @@ router.get("/loginAdmin", (req, res) => {
   });
 });
 
-//  RUTA CURRENT
+//---------------------------------------------------------------- RUTA CURRENT ---------------//
 
 router.get("/current", (req, res) => {
   const user = req.session.usuario;
