@@ -48,6 +48,7 @@ class UsersMongoDao {
       throw new Error("Error al eliminar usuario desde la base de datos");
     }
   }
+
   async getUserByEmailRegister({ email }) {
     try {
       await UserModel.findOne({ email });
