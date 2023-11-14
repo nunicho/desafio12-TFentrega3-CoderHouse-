@@ -6,6 +6,13 @@ const Producto = require("../models/productos.modelo.js");
 const path = require("path");
 const prodModelo = require("../models/productos.modelo.js");
 
+
+
+// ------------------ TICKET ----------------- // 
+
+const ticketsModelo = require("../models/ticket.modelo.js");
+
+
 router.get("/", async (req, res) => {
   try {
     const carritos = await carritosModelo.find();
@@ -127,6 +134,17 @@ router.post("/purchase", async (req, res) => {
 
     let carritoInsertado = await carrito.save();
 
+    // Crear un nuevo ticket
+    const ticket = new ticketsModelo({
+      code: generateTicketCode(), // Puedes implementar una función para generar un código de ticket único
+      purchase_datetime: new Date(),
+      amount: 1200,//amount: calculateTotalAmount(carritoToAdd.products), // Implementa una función para calcular el monto total
+      purchaser: "NombreDelComprador", // Puedes obtener esta información del usuario si lo tienes autenticado
+    });
+
+    // Guardar el ticket en la base de datos
+    const ticketInsertado = await ticket.save();
+
     // Restar el stock de los productos en el carrito
     for (const product of carritoToAdd.products) {
       const productInDB = await Producto.findById(product.id);
@@ -140,7 +158,29 @@ router.post("/purchase", async (req, res) => {
   }
 });
 
+function generateTicketCode() {
+  const currentDate = new Date();
+  const timestamp = currentDate.getTime(); // Obtener el timestamp actual
+  const randomPart = Math.random().toString(36).substring(2, 8); // Generar una cadena aleatoria
 
+  // Concatenar el timestamp y la cadena aleatoria para formar el código del ticket
+  const ticketCode = `${timestamp}${randomPart}`;
+
+  return ticketCode;
+}
+
+function calculateTotalAmount(products) {
+  let totalAmount = 0;
+
+  for (const product of products) {
+    totalAmount += product.quantity * product.price;
+  }
+
+  // Puedes redondear el monto total a dos decimales si es necesario
+  totalAmount = parseFloat(totalAmount.toFixed(2));
+
+  return totalAmount;
+}
 
 module.exports = router;
 
