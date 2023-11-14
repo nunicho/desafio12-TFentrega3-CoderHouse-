@@ -23,9 +23,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   finalizarCompraButton.addEventListener("click", async () => {
     try {
-      let totalAmount = 0;
-    for (const product of carritoProductos) {
-      totalAmount += product.quantity * product.price};
       const products = carritoProductos.map((product) => ({
         id: product.id,
         quantity: product.quantity,
@@ -69,24 +66,24 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   const addToCartLinks = document.querySelectorAll("[data-product-id]");
-addToCartLinks.forEach((link) => {
-  link.addEventListener("click", async (event) => {
-    event.preventDefault();
+  addToCartLinks.forEach((link) => {
+    link.addEventListener("click", async (event) => {
+      event.preventDefault();
 
-    const productId = link.getAttribute("data-product-id");
-    const productName = link.getAttribute("data-product-name");
-    const price = parseFloat(link.getAttribute("data-product-price"));
+      const productId = link.getAttribute("data-product-id");
+      const productName = link.getAttribute("data-product-name");
+      const price = parseFloat(link.getAttribute("data-product-price"));
 
-    const quantity = parseInt(prompt(`Cantidad de ${productName}:`), 10);
+      const quantity = parseInt(prompt(`Cantidad de ${productName}:`), 10);
 
-    if (!isNaN(quantity) && quantity > 0) {
-      agregarAlCarrito(productId, productName, quantity, price);
-      carritoProductos.push({ id: productId, quantity, price });
-    } else {
-      alert("La cantidad ingresada no es válida.");
-    }
+      if (!isNaN(quantity) && quantity > 0) {
+        agregarAlCarrito(productId, productName, quantity, price);
+        carritoProductos.push({ id: productId, quantity, price });
+      } else {
+        alert("La cantidad ingresada no es válida.");
+      }
+    });
   });
-});
 });
 
 /*
