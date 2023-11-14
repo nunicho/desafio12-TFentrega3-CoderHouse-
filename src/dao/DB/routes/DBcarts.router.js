@@ -146,12 +146,13 @@ router.post("/purchase", async (req, res) => {
 
     let carritoInsertado = await carrito.save();
 
+    
 
     const ticket = new ticketsModelo({
       code: generateTicketCode(),
       purchase_datetime: new Date(),
-      amount: totalAmount, 
-      purchaser: "NombreDelComprador",
+      amount: totalAmount,
+      purchaser: req.session.usuario.email
     });
 
     
