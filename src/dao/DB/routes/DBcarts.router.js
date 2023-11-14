@@ -165,7 +165,7 @@ router.post("/purchase", async (req, res) => {
       await productInDB.save();
     }
 
-    res.status(201).json({ carritoInsertado });
+    res.status(201).json({ carritoInsertado, ticketInsertado });
   } catch (error) {
     res.status(500).json({ error: "Error inesperado", detalle: error.message });
   }
