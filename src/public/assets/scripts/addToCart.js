@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const carritoContainer = document.getElementById("carritoProductos");
   const carritoProductos = [];
 
-  async function agregarAlCarrito(productId, productName, quantity) {
+  async function agregarAlCarrito(productId, productName, quantity, price) {
     const itemDiv = document.createElement("div");
 
     const productNameText = document.createTextNode(productName);
@@ -14,20 +14,18 @@ document.addEventListener("DOMContentLoaded", function () {
     quantityText.textContent = `Cantidad: ${quantity}`;
     itemDiv.appendChild(quantityText);
 
+    const priceText = document.createElement("span");
+    priceText.textContent = `Precio: $${(quantity * price).toFixed(2)}`;
+    itemDiv.appendChild(priceText);
+
     carritoContainer.appendChild(itemDiv);
   }
 
-  function limpiarCarrito() {
-    carritoContainer.innerHTML = "";
-    carritoProductos.length = 0;
-  }
-
-  limpiarCarritoButton.addEventListener("click", () => {
-    limpiarCarrito();
-  });
-
   finalizarCompraButton.addEventListener("click", async () => {
     try {
+      let totalAmount = 0;
+    for (const product of carritoProductos) {
+      totalAmount += product.quantity * product.price};
       const products = carritoProductos.map((product) => ({
         id: product.id,
         quantity: product.quantity,
@@ -71,23 +69,24 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   const addToCartLinks = document.querySelectorAll("[data-product-id]");
-  addToCartLinks.forEach((link) => {
-    link.addEventListener("click", async (event) => {
-      event.preventDefault();
+addToCartLinks.forEach((link) => {
+  link.addEventListener("click", async (event) => {
+    event.preventDefault();
 
-      const productId = link.getAttribute("data-product-id");
-      const productName = link.getAttribute("data-product-name");
+    const productId = link.getAttribute("data-product-id");
+    const productName = link.getAttribute("data-product-name");
+    const price = parseFloat(link.getAttribute("data-product-price"));
 
-      const quantity = parseInt(prompt(`Cantidad de ${productName}:`), 10);
+    const quantity = parseInt(prompt(`Cantidad de ${productName}:`), 10);
 
-      if (!isNaN(quantity) && quantity > 0) {
-        agregarAlCarrito(productId, productName, quantity);
-        carritoProductos.push({ id: productId, quantity });
-      } else {
-        alert("La cantidad ingresada no es válida.");
-      }
-    });
+    if (!isNaN(quantity) && quantity > 0) {
+      agregarAlCarrito(productId, productName, quantity, price);
+      carritoProductos.push({ id: productId, quantity, price });
+    } else {
+      alert("La cantidad ingresada no es válida.");
+    }
   });
+});
 });
 
 /*

@@ -50,7 +50,7 @@
             </div>
         </article> 
         <a href="DBProducts/{{ this._id }}">Más detalles</a>        
-        <a href="#" data-product-id="{{ this._id }}" data-product-name="{{ this.title }}">Agregar al Carrito</a>
+        <a href="#" data-product-id="{{ this._id }}" data-product-name="{{ this.title }}" data-product-price="{{ this.price }}">Agregar al Carrito</a>
         {{/each }}
     {{else}}
     <h1> ¡No se encontraron productos! </h1>
