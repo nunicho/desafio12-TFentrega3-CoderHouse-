@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const carritoContainer = document.getElementById("carritoProductos");
   const carritoProductos = [];
 
+  function limpiarCarrito() {
+  carritoContainer.innerHTML = "";
+  carritoProductos.length = 0;
+}
+
+limpiarCarritoButton.addEventListener("click", () => {
+  limpiarCarrito();
+});
+
   async function agregarAlCarrito(productId, productName, quantity, price) {
     const itemDiv = document.createElement("div");
 
@@ -49,6 +58,17 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       }
 
+      function limpiarCarrito() {
+        carritoContainer.innerHTML = "";
+
+        carritoProductos.length = 0;
+      }
+
+      limpiarCarritoButton.addEventListener("click", () => {
+        limpiarCarrito();
+      });
+
+
       const data = await response.json();
 
       console.log("Compra finalizada:", data);
@@ -57,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
         alert(`Carrito ${data.carritoInsertado._id} creado exitosamente`);
       }
 
-      // Aquí puedes realizar acciones adicionales después de la compra
 
       limpiarCarrito();
     } catch (error) {
