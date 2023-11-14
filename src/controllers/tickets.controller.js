@@ -104,3 +104,6 @@ module.exports = {
   obtenerTicket,
   borrarTicket,
 };
+
+
+// FALTA APLICAR REPOSITORY AL TICKET

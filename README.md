@@ -14,15 +14,19 @@ Mauricio Javier ALONSO
 
 ## 3. TITULO DESAFIO ENTREGABLE: 
 
-Reestructura de nuestro servidor
+Tercera entrega del desafío final
 
 ## 4. N° DESAFIO ENTREGABLE: 
 
-N° 11
+N° 12
 
 ## 5. CONSIGNA DESAFIO ENTREGABLE: 
 
-Con base en las clases previamente vistas, realizar los cambios necesarios en tu proyecto...
+Mejorando la arquitectura del servidor.
+
+Profesionalizar el servidor.
+Aplicar una arquitectura profesional para nuestro servidor.
+Aplc
 
 
 
@@ -149,3 +153,12 @@ Para este repo se eligió Sessions .
 ## 12. Ruta Current
 
 Se creó la ruta "/current" en "vistas.router.js" que informa si hay un usuario autenticado o no. 
+
+## 13. Diferentes rutas para administrador y usuario
+Se implementó que si ingresa un administrador, pueda borrar y agregar productos.
+En cambio, si ingresa un usuario, podrá manejar el carrito de compras y el chat.
+
+## 14. Se aplicó el patrón Repository
+Para users y productos.
+
+## 15. Se implementó un ticket con la compra

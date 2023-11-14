@@ -53,3 +53,5 @@ class TicketsRepository {
 }
 
 module.exports = new TicketsRepository();
+
+// FALTA APLICAR REPOSITORY AL TICKET

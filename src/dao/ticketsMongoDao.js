@@ -29,3 +29,5 @@ class TicketsMongoDao {
 }
 
 module.exports = new TicketsMongoDao();
+
+// FALTA APLICAR REPOSITORY AL TICKET
